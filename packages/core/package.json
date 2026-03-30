@@ -1,0 +1,53 @@
+{
+  "name": "@flowpilot/core",
+  "version": "0.0.0",
+  "description": "Framework-agnostic orchestration engine for product tours and onboarding flows",
+  "type": "module",
+  "main": "./dist/index.js",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "default": "./dist/index.js"
+    }
+  },
+  "files": [
+    "dist",
+    "README.md"
+  ],
+  "sideEffects": false,
+  "scripts": {
+    "build": "tsup",
+    "dev": "tsup --watch",
+    "lint": "eslint src --max-warnings 0",
+    "type-check": "tsc --noEmit",
+    "test": "vitest run",
+    "test:unit": "vitest run",
+    "test:watch": "vitest",
+    "clean": "rm -rf dist .turbo node_modules"
+  },
+  "keywords": [
+    "product-tour",
+    "onboarding",
+    "walkthrough",
+    "headless",
+    "typescript"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/yourusername/flowpilot",
+    "directory": "packages/core"
+  },
+  "license": "MIT",
+  "devDependencies": {
+    "@flowpilot/eslint-config": "workspace:*",
+    "@flowpilot/tsconfig": "workspace:*",
+    "@types/node": "^20.11.19",
+    "eslint": "^8.56.0",
+    "tsup": "^8.0.2",
+    "typescript": "^5.3.3",
+    "vitest": "^1.2.2"
+  }
+}

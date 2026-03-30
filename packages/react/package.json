@@ -1,0 +1,66 @@
+{
+  "name": "@flowpilot/react",
+  "version": "0.0.0",
+  "description": "React bindings for FlowPilot",
+  "type": "module",
+  "main": "./dist/index.js",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "default": "./dist/index.js"
+    }
+  },
+  "files": [
+    "dist",
+    "README.md"
+  ],
+  "sideEffects": false,
+  "scripts": {
+    "build": "tsup",
+    "dev": "tsup --watch",
+    "lint": "eslint src --max-warnings 0",
+    "type-check": "tsc --noEmit",
+    "test": "vitest run",
+    "test:unit": "vitest run",
+    "test:watch": "vitest",
+    "clean": "rm -rf dist .turbo node_modules"
+  },
+  "keywords": [
+    "react",
+    "product-tour",
+    "onboarding",
+    "hooks",
+    "typescript"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/yourusername/flowpilot",
+    "directory": "packages/react"
+  },
+  "license": "MIT",
+  "peerDependencies": {
+    "react": "^18.0.0 || ^19.0.0",
+    "react-dom": "^18.0.0 || ^19.0.0"
+  },
+  "dependencies": {
+    "@flowpilot/core": "workspace:*"
+  },
+  "devDependencies": {
+    "@flowpilot/eslint-config": "workspace:*",
+    "@flowpilot/tsconfig": "workspace:*",
+    "@testing-library/react": "^14.2.1",
+    "@types/node": "^20.11.19",
+    "@types/react": "^18.2.55",
+    "@vitejs/plugin-react": "^4.2.1",
+    "eslint": "^8.56.0",
+    "jsdom": "^24.0.0",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "tsup": "^8.0.2",
+    "typescript": "^5.3.3",
+    "vitest": "^1.2.2"
+  }
+}

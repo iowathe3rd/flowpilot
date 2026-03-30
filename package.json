@@ -1,0 +1,33 @@
+{
+  "name": "flowpilot-monorepo",
+  "version": "0.0.0",
+  "private": true,
+  "description": "FlowPilot - Headless TypeScript library for product tours and onboarding flows",
+  "scripts": {
+    "build": "turbo run build",
+    "dev": "turbo run dev",
+    "lint": "turbo run lint",
+    "type-check": "turbo run type-check",
+    "test": "turbo run test",
+    "test:unit": "turbo run test:unit",
+    "test:e2e": "turbo run test:e2e",
+    "format": "prettier --write \"**/*.{ts,tsx,js,jsx,json,md,yml,yaml}\"",
+    "format:check": "prettier --check \"**/*.{ts,tsx,js,jsx,json,md,yml,yaml}\"",
+    "clean": "turbo run clean && rm -rf node_modules",
+    "changeset": "changeset",
+    "version": "changeset version",
+    "release": "turbo run build && changeset publish"
+  },
+  "devDependencies": {
+    "@changesets/cli": "^2.27.1",
+    "@types/node": "^20.11.19",
+    "prettier": "^3.2.5",
+    "turbo": "^1.12.4",
+    "typescript": "^5.3.3"
+  },
+  "packageManager": "pnpm@10.30.0",
+  "engines": {
+    "node": ">=18.0.0",
+    "pnpm": ">=8.0.0"
+  }
+}

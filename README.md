@@ -1,42 +1,143 @@
 # FlowPilot
 
-> A headless TypeScript library for building product tours, onboarding flows, and guided walkthroughs in React and Next.js
+> Headless TypeScript library for product tours, onboarding flows, and guided walkthroughs in React/Next.js applications.
 
-## Status
+FlowPilot separates **flow orchestration** from **UI rendering**.  
+You build your own tooltip, overlay, and styles — FlowPilot handles state, navigation, lifecycle, guards, events, and targets.
 
-✅ **MVP Core Ready** - core engine, React bindings, integration tests, E2E setup, and docs app scaffold are implemented.
+## What is FlowPilot
 
-## Overview
+FlowPilot is a layered system with:
 
-FlowPilot is a modern, headless orchestration engine that provides state management, events, DOM integration, and lifecycle hooks for building custom product tours—without imposing any UI constraints. You bring your own components, we handle the flow logic.
+- a framework-agnostic engine (`@flowpilot/core`)
+- React bindings (`@flowpilot/react`)
+- a demo app and docs app inside this monorepo
 
-### Key Principles
+It is designed for teams that need custom onboarding UX without being locked into prebuilt UI components.
 
-- **Headless-first**: No opinionated UI components—you control the visual layer
-- **TypeScript-native**: Comprehensive types with excellent developer experience
-- **SSR-safe**: First-class Next.js support with App Router compatibility
-- **Lightweight**: Minimal bundle size, zero heavy dependencies
-- **Framework-agnostic core**: React bindings provided, core engine works anywhere
+## Key Features
 
-## Packages
+### Headless architecture
 
-This monorepo contains:
+- no opinionated UI components
+- engine and hooks expose state + actions + events
+- your application controls all rendering
 
-- **[@flowpilot/core](./packages/core)** - Framework-agnostic orchestration engine
-- **[@flowpilot/react](./packages/react)** - React hooks and provider
-- **[docs](./apps/docs)** - Documentation site (Next.js)
-- **[demo](./apps/demo)** - Development sandbox
+### Strong flow orchestration
+
+- declarative flow/step config
+- controls: `start`, `stop`, `pause`, `resume`, `next`, `prev`, `goTo`, `skip`, `reset`
+- deterministic state machine for flow and step lifecycles
+
+### Guards and lifecycle hooks
+
+- per-step guard (`when`) to include/exclude steps dynamically
+- lifecycle hooks:
+  - flow level: `onStart`, `onComplete`, `onSkip`, `onError`
+  - step level: `beforeEnter`, `afterEnter`, `beforeLeave`
+
+### Typed events
+
+- `flow:start`, `flow:pause`, `flow:resume`, `flow:complete`, `flow:skip`, `flow:error`
+- `step:enter`, `step:leave`, `step:ready`, `step:target-missing`, `step:complete`
+- strongly typed payloads for analytics and custom behavior
+
+### Target resolution and geometry
+
+- supports selector / element / ref / function target specs
+- target visibility and viewport checks
+- target rect for tooltip/overlay positioning
+
+### React integration
+
+- `FlowPilotProvider`
+- hooks:
+  - `useFlowPilot`
+  - `useFlow`
+  - `useCurrentStep`
+  - `useFlowControls`
+  - `useFlowEvents`
+  - `useTarget`
+
+### Controlled mode support
+
+`FlowPilotProvider` supports controlled orchestration via:
+
+- `activeFlowId`
+- `activeStepId`
+- `onStateChange`
+
+### SSR-safe usage
+
+- core architecture is React-agnostic
+- React package is compatible with client-component usage in Next.js app router
+
+## Monorepo Packages
+
+- **[@flowpilot/core](./packages/core)** — framework-agnostic orchestration engine
+- **[@flowpilot/react](./packages/react)** — React provider and hooks
+- **[apps/demo](./apps/demo)** — full showcase app (uncontrolled + controlled mode)
+- **[apps/docs](./apps/docs)** — Next.js documentation app
+
+## Quick Start
+
+```tsx
+import { FlowPilotProvider, useFlowPilot, useFlow } from '@flowpilot/react';
+import { useEffect } from 'react';
+
+function Onboarding() {
+  const { registerFlow, start, next } = useFlowPilot();
+  const state = useFlow();
+
+  useEffect(() => {
+    registerFlow({
+      id: 'onboarding',
+      steps: [{ id: 'welcome' }, { id: 'features' }, { id: 'done' }],
+    });
+    void start('onboarding');
+  }, [registerFlow, start]);
+
+  return (
+    <div>
+      <p>Status: {state.status}</p>
+      <p>Current step: {state.currentStepId}</p>
+      <button onClick={() => void next()}>Next</button>
+    </div>
+  );
+}
+
+export default function App() {
+  return (
+    <FlowPilotProvider>
+      <Onboarding />
+    </FlowPilotProvider>
+  );
+}
+```
+
+## Architecture (high-level)
+
+1. **Engine layer (`@flowpilot/core`)**
+   - state machine
+   - flow registry
+   - step navigator
+   - event emitter
+   - hooks/guards execution
+
+2. **Target layer (`@flowpilot/core/target`)**
+   - target resolving
+   - visibility/viewport/rect utilities
+
+3. **React layer (`@flowpilot/react`)**
+   - provider lifecycle
+   - subscriptions via hooks
+   - controlled mode adapter
+
+4. **Consumer UI layer (your app)**
+   - tooltip/overlay/components
+   - visual design and interaction model
 
 ## Development
-
-This project uses:
-
-- **pnpm** - Fast, disk space efficient package manager
-- **Turborepo** - High-performance build system
-- **TypeScript** - Type safety and excellent DX
-- **Vitest** - Fast unit testing
-- **Playwright** - End-to-end browser tests
-- **Changesets** - Version management and changelogs
 
 ### Prerequisites
 
@@ -46,73 +147,68 @@ This project uses:
 ### Setup
 
 ```bash
-# Install dependencies
 pnpm install
-
-# Build all packages
-pnpm run build
-
-# Run tests
-pnpm run test
-
-# Start development
-pnpm run dev
 ```
 
-### Verification
+### Common Commands
 
 ```bash
-# Unit + integration tests
+# all workspaces
+pnpm run build
 pnpm run test
-
-# Demo E2E
-pnpm --filter demo test:e2e
-
-# Build all workspaces
-pnpm run build
-```
-
-### Monorepo Commands
-
-```bash
-# Build all packages
-pnpm run build
-
-# Build specific package
-pnpm run build --filter='@flowpilot/core'
-
-# Run linting
 pnpm run lint
-
-# Type check
 pnpm run type-check
 
-# Format code
-pnpm run format
+# package-level examples
+pnpm --filter @flowpilot/core run test
+pnpm --filter @flowpilot/react run test
+
+# demo
+pnpm --filter demo dev
+pnpm --filter demo build
+pnpm --filter demo test:e2e
+
+# docs
+pnpm --filter docs dev
+pnpm --filter docs build
 ```
 
-## Architecture
+### Validation / Release prep
 
-FlowPilot follows a layered architecture:
+```bash
+# package type + bundle checks
+pnpm run validate:packages
 
-1. **Engine Layer** - State machine, transitions, flow semantics
-2. **Target Layer** - DOM resolution, observers, measurements
-3. **React Binding Layer** - Provider, hooks, subscriptions
-4. **Diagnostics Layer** - Logging, warnings, debug metadata
+# changesets publish workflow
+pnpm changeset
+pnpm version
+pnpm release
+```
 
-## Roadmap
+## Testing
 
-- [x] Core engine (`@flowpilot/core`)
-- [x] React bindings (`@flowpilot/react`)
-- [x] Core + React test suites
-- [x] Demo Playwright E2E setup
-- [x] Next.js docs app scaffold
-- [ ] API docs depth polish
-- [ ] Publish validation and release automation polish
+- Unit/integration: Vitest (`core`, `react`)
+- E2E: Playwright (`apps/demo/e2e`)
 
-## Contributing
+Examples:
 
-This is currently in active MVP development. Contributions will be welcome once the initial release is stable.
+```bash
+pnpm --filter @flowpilot/core exec vitest run src/__tests__/integration.test.ts
+pnpm --filter @flowpilot/react exec vitest run src/__tests__/react-integration.test.tsx
+pnpm --filter demo exec playwright test e2e/demo-tour.spec.ts
+```
+
+## Current Project Status
+
+✅ MVP implemented:
+
+- core engine
+- React bindings
+- controlled mode
+- target system
+- demo showcase
+- docs app
+- CI, validation, and release scaffolding
 
 ## License
 

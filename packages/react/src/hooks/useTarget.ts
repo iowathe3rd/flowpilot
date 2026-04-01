@@ -1,6 +1,6 @@
 'use client';
 
-import { useSyncExternalStore, useMemo, useRef, useCallback } from 'react';
+import { useSyncExternalStore, useRef, useCallback } from 'react';
 import { useFlowPilotEngine } from '../provider/FlowPilotProvider';
 import { resolveTarget } from '@flowpilot/core';
 import type { ResolvedTarget, TargetSpec } from '@flowpilot/core';
@@ -12,24 +12,22 @@ export function useTarget(spec?: TargetSpec): ResolvedTarget | null {
   const engine = useFlowPilotEngine();
   const targetRef = useRef<ResolvedTarget | null>(null);
 
-  // Get current step's target if no spec provided
-  const targetSpec = useMemo(() => {
-    if (spec !== undefined) {
-      return spec;
-    }
-    const step = engine.getCurrentStep();
-    return step?.target ?? null;
-  }, [spec, engine]);
+  const getCurrentSpec = useCallback((): TargetSpec | null => {
+    if (spec !== undefined) return spec;
+    return engine.getCurrentStep()?.target ?? null;
+  }, [engine, spec]);
 
-  if (targetRef.current === null && targetSpec) {
-    targetRef.current = resolveTarget(targetSpec);
+  if (targetRef.current === null) {
+    const initialSpec = getCurrentSpec();
+    targetRef.current = initialSpec ? resolveTarget(initialSpec) : null;
   }
 
   const subscribe = useCallback(
     (callback: () => void) => {
       // Subscribe to step changes
       const wrappedCallback = () => {
-        targetRef.current = targetSpec ? resolveTarget(targetSpec) : null;
+        const currentSpec = getCurrentSpec();
+        targetRef.current = currentSpec ? resolveTarget(currentSpec) : null;
         callback();
       };
       const unsubscribers = [
@@ -45,7 +43,7 @@ export function useTarget(spec?: TargetSpec): ResolvedTarget | null {
         clearInterval(interval);
       };
     },
-    [engine, targetSpec]
+    [engine, getCurrentSpec]
   );
 
   const getSnapshot = useCallback(() => targetRef.current, []);

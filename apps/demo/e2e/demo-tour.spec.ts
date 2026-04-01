@@ -8,6 +8,8 @@ test.describe('FlowPilot demo tour', () => {
     await expect(page.getByText('Status: running')).toBeVisible();
     await expect(page.getByText('Index: 1 / 5')).toBeVisible();
     await expect(page.getByText('Current Step: Welcome')).toBeVisible();
+    await expect(page.getByText('Enable masking overlay')).toBeVisible();
+    await expect(page.locator('.spotlight-mask')).toBeVisible();
   });
 
   test('navigates through steps via next', async ({ page }) => {

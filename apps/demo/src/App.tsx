@@ -12,6 +12,32 @@ import type { FlowConfig, FlowPilotEvent, FlowState } from '@flowpilot/core';
 
 type LogLine = { id: number; text: string };
 
+function SpotlightMask({
+  enabled,
+  rect,
+  borderRadius,
+}: {
+  enabled: boolean;
+  rect: { top: number; left: number; width: number; height: number } | null;
+  borderRadius: number;
+}) {
+  if (!enabled || !rect) return null;
+
+  return (
+    <div
+      aria-hidden
+      className="spotlight-mask"
+      style={{
+        top: rect.top,
+        left: rect.left,
+        width: rect.width,
+        height: rect.height,
+        borderRadius,
+      }}
+    />
+  );
+}
+
 function UncontrolledShowcase() {
   const { registerFlow, start, next, prev, skip, pause, resume, reset, goTo } = useFlowPilot();
   const state = useFlow();
@@ -22,6 +48,9 @@ function UncontrolledShowcase() {
   const initializedRef = useRef(false);
   const optionalEnabledRef = useRef(true);
   const [optionalEnabled, setOptionalEnabled] = useState(true);
+  const [maskEnabled, setMaskEnabled] = useState(true);
+  const [maskPadding, setMaskPadding] = useState(10);
+  const [maskRadius, setMaskRadius] = useState(12);
   const [logs, setLogs] = useState<LogLine[]>([]);
   const logIdRef = useRef(0);
 
@@ -112,9 +141,32 @@ function UncontrolledShowcase() {
 
   const stepTitle = (step?.meta?.title as string | undefined) ?? step?.id ?? 'No step';
   const stepDescription = (step?.meta?.description as string | undefined) ?? 'No description';
+  const stepRect =
+    typeof window !== 'undefined' &&
+    typeof document !== 'undefined' &&
+    typeof step?.target === 'string'
+      ? document.querySelector(step.target)?.getBoundingClientRect() ?? null
+      : null;
+  const baseRect = target?.rect ?? stepRect;
+  const spotlightRect = target?.rect
+    ? {
+        top: Math.max(0, target.rect.top - maskPadding),
+        left: Math.max(0, target.rect.left - maskPadding),
+        width: target.rect.width + maskPadding * 2,
+        height: target.rect.height + maskPadding * 2,
+      }
+    : baseRect
+      ? {
+          top: Math.max(0, baseRect.top - maskPadding),
+          left: Math.max(0, baseRect.left - maskPadding),
+          width: baseRect.width + maskPadding * 2,
+          height: baseRect.height + maskPadding * 2,
+        }
+      : null;
 
   return (
     <div className="demo-shell">
+      <SpotlightMask enabled={maskEnabled} rect={spotlightRect} borderRadius={maskRadius} />
       <header className="demo-header">
         <h1>FlowPilot Demo</h1>
         <p>A headless tour library for React — full feature showcase</p>
@@ -133,12 +185,47 @@ function UncontrolledShowcase() {
 
         <section className="card">
           <h2>Target resolver</h2>
-          <p><strong>Resolved:</strong> {target?.found ? 'yes' : 'no'}</p>
+          <p><strong>Resolved:</strong> {target?.element || stepRect ? 'yes' : 'no'}</p>
           <p><strong>Visible:</strong> {target?.isVisible ? 'yes' : 'no'}</p>
           <p><strong>In viewport:</strong> {target?.isInViewport ? 'yes' : 'no'}</p>
           <p>
             <strong>Rect:</strong>{' '}
             {target?.rect ? `${Math.round(target.rect.x)},${Math.round(target.rect.y)} ${Math.round(target.rect.width)}x${Math.round(target.rect.height)}` : 'n/a'}
+          </p>
+        </section>
+
+        <section className="card">
+          <h2>Masking / spotlight</h2>
+          <label className="toggle">
+            <input
+              type="checkbox"
+              checked={maskEnabled}
+              onChange={(event) => setMaskEnabled(event.target.checked)}
+            />
+            <span>Enable masking overlay</span>
+          </label>
+          <label className="toggle">
+            <span>Padding: {maskPadding}px</span>
+            <input
+              type="range"
+              min={0}
+              max={24}
+              value={maskPadding}
+              onChange={(event) => setMaskPadding(Number(event.target.value))}
+            />
+          </label>
+          <label className="toggle">
+            <span>Radius: {maskRadius}px</span>
+            <input
+              type="range"
+              min={0}
+              max={24}
+              value={maskRadius}
+              onChange={(event) => setMaskRadius(Number(event.target.value))}
+            />
+          </label>
+          <p className="hint">
+            Маска построена поверх <code>useTarget().rect</code> и обновляется при смене шага.
           </p>
         </section>
 

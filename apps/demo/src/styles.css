@@ -7,20 +7,22 @@
 body {
   font-family: system-ui, -apple-system, sans-serif;
   line-height: 1.6;
+  background: #f8fafc;
+  color: #0f172a;
 }
 
 button {
-  padding: 0.75rem 1.5rem;
-  border: 2px solid #333;
-  background: white;
+  padding: 0.55rem 0.9rem;
+  border: 1px solid #334155;
+  background: #fff;
   cursor: pointer;
-  font-size: 1rem;
-  border-radius: 4px;
+  font-size: 0.9rem;
+  border-radius: 8px;
   transition: all 0.2s;
 }
 
 button:hover:not(:disabled) {
-  background: #333;
+  background: #334155;
   color: white;
 }
 
@@ -35,4 +37,85 @@ h1 {
 
 h2 {
   margin-bottom: 1rem;
+}
+
+.tabs {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  display: flex;
+  gap: 0.6rem;
+  padding: 0.75rem 1rem;
+  background: #e2e8f0;
+  border-bottom: 1px solid #cbd5e1;
+}
+
+.demo-shell {
+  max-width: 1050px;
+  margin: 1.5rem auto;
+  padding: 0 1rem 2rem;
+}
+
+.demo-header {
+  margin-bottom: 1rem;
+}
+
+.demo-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 0.9rem;
+}
+
+.card {
+  border: 1px solid #cbd5e1;
+  border-radius: 12px;
+  background: #fff;
+  padding: 1rem;
+}
+
+.row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.hint {
+  font-size: 0.8rem;
+  color: #475569;
+}
+
+.toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.targets,
+.logs {
+  border: 1px solid #cbd5e1;
+  border-radius: 12px;
+  background: #fff;
+  padding: 1rem;
+  margin-top: 1rem;
+}
+
+.target-box {
+  border: 1px dashed #64748b;
+  border-radius: 10px;
+  padding: 0.55rem 0.7rem;
+  margin-top: 0.45rem;
+  background: #f8fafc;
+}
+
+.logs ul {
+  list-style: none;
+  margin-top: 0.7rem;
+}
+
+.logs li {
+  font-size: 0.85rem;
+  border-top: 1px solid #e2e8f0;
+  padding: 0.35rem 0;
 }

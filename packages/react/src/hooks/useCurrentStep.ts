@@ -1,6 +1,6 @@
 'use client';
 
-import { useSyncExternalStore } from 'react';
+import { useSyncExternalStore, useRef, useCallback } from 'react';
 import { useFlowPilotEngine } from '../provider/FlowPilotProvider';
 import type { StepConfig } from '@flowpilot/core';
 
@@ -9,18 +9,35 @@ import type { StepConfig } from '@flowpilot/core';
  */
 export function useCurrentStep(): StepConfig | null {
   const engine = useFlowPilotEngine();
+  const stepRef = useRef<StepConfig | null>(engine.getCurrentStep());
 
-  return useSyncExternalStore(
-    (callback) => {
+  const subscribe = useCallback(
+    (callback: () => void) => {
+      const wrappedCallback = () => {
+        stepRef.current = engine.getCurrentStep();
+        callback();
+      };
+
       const unsubscribers = [
-        engine.on('step:enter', callback),
-        engine.on('step:leave', callback),
+        engine.on('step:enter', wrappedCallback),
+        engine.on('step:leave', wrappedCallback),
       ];
+      const interval = setInterval(wrappedCallback, 100);
       return () => {
         unsubscribers.forEach((unsub) => unsub());
+        clearInterval(interval);
       };
     },
-    () => engine.getCurrentStep(),
-    () => null // SSR snapshot
+    [engine]
   );
+
+  const getSnapshot = useCallback(() => {
+    return stepRef.current;
+  }, []);
+
+  const getServerSnapshot = useCallback(() => {
+    return null;
+  }, []);
+
+  return useSyncExternalStore(subscribe, getSnapshot, getServerSnapshot);
 }

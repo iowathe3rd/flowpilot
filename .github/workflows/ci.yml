@@ -39,3 +39,6 @@ jobs:
 
       - name: Build
         run: pnpm run build
+
+      - name: Validate packages
+        run: pnpm run validate:packages

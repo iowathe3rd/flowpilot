@@ -1,5 +1,6 @@
 'use client';
 
+import { useCallback, useMemo } from 'react';
 import { useFlowPilotEngine } from '../provider/FlowPilotProvider';
 import type { FlowConfig } from '@flowpilot/core';
 
@@ -9,17 +10,46 @@ import type { FlowConfig } from '@flowpilot/core';
 export function useFlowPilot() {
   const engine = useFlowPilotEngine();
 
-  return {
-    engine,
-    registerFlow: (config: FlowConfig) => engine.registerFlow(config),
-    start: (flowId: string) => engine.start(flowId),
-    stop: () => engine.stop(),
-    pause: () => engine.pause(),
-    resume: () => engine.resume(),
-    next: () => engine.next(),
-    prev: () => engine.prev(),
-    goTo: (stepId: string) => engine.goTo(stepId),
-    skip: () => engine.skip(),
-    reset: () => engine.reset(),
-  };
+  const registerFlow = useCallback(
+    (config: FlowConfig) => engine.registerFlow(config),
+    [engine]
+  );
+  const start = useCallback((flowId: string) => engine.start(flowId), [engine]);
+  const stop = useCallback(() => engine.stop(), [engine]);
+  const pause = useCallback(() => engine.pause(), [engine]);
+  const resume = useCallback(() => engine.resume(), [engine]);
+  const next = useCallback(() => engine.next(), [engine]);
+  const prev = useCallback(() => engine.prev(), [engine]);
+  const goTo = useCallback((stepId: string) => engine.goTo(stepId), [engine]);
+  const skip = useCallback(() => engine.skip(), [engine]);
+  const reset = useCallback(() => engine.reset(), [engine]);
+
+  return useMemo(
+    () => ({
+      engine,
+      registerFlow,
+      start,
+      stop,
+      pause,
+      resume,
+      next,
+      prev,
+      goTo,
+      skip,
+      reset,
+    }),
+    [
+      engine,
+      registerFlow,
+      start,
+      stop,
+      pause,
+      resume,
+      next,
+      prev,
+      goTo,
+      skip,
+      reset,
+    ]
+  );
 }

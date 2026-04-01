@@ -4,7 +4,7 @@
 
 ## Status
 
-🚧 **Work in Progress** - MVP implementation in active development
+✅ **MVP Core Ready** - core engine, React bindings, integration tests, E2E setup, and docs app scaffold are implemented.
 
 ## Overview
 
@@ -13,7 +13,7 @@ FlowPilot is a modern, headless orchestration engine that provides state managem
 ### Key Principles
 
 - **Headless-first**: No opinionated UI components—you control the visual layer
-- **TypeScript-native**: Comprehensive types with excellent developer experience  
+- **TypeScript-native**: Comprehensive types with excellent developer experience
 - **SSR-safe**: First-class Next.js support with App Router compatibility
 - **Lightweight**: Minimal bundle size, zero heavy dependencies
 - **Framework-agnostic core**: React bindings provided, core engine works anywhere
@@ -23,7 +23,7 @@ FlowPilot is a modern, headless orchestration engine that provides state managem
 This monorepo contains:
 
 - **[@flowpilot/core](./packages/core)** - Framework-agnostic orchestration engine
-- **[@flowpilot/react](./packages/react)** - React hooks and provider  
+- **[@flowpilot/react](./packages/react)** - React hooks and provider
 - **[docs](./apps/docs)** - Documentation site (Next.js)
 - **[demo](./apps/demo)** - Development sandbox
 
@@ -40,7 +40,7 @@ This project uses:
 
 ### Prerequisites
 
-- Node.js 18+ 
+- Node.js 18+
 - pnpm 8+
 
 ### Setup
@@ -57,6 +57,19 @@ pnpm run test
 
 # Start development
 pnpm run dev
+```
+
+### Verification
+
+```bash
+# Unit + integration tests
+pnpm run test
+
+# Demo E2E
+pnpm --filter demo test:e2e
+
+# Build all workspaces
+pnpm run build
 ```
 
 ### Monorepo Commands
@@ -89,43 +102,13 @@ FlowPilot follows a layered architecture:
 
 ## Roadmap
 
-### ✅ Phase 1: Foundation (In Progress)
-
-- [x] Monorepo setup with Turborepo + pnpm
-- [x] Core type system
-- [ ] State machine implementation
-- [ ] Event system
-- [ ] Logger implementation
-
-### Phase 2: Core Engine
-
-- [ ] Flow registry
-- [ ] Step navigation
-- [ ] Guards and conditionals
-- [ ] Target resolution system
-
-### Phase 3: React Bindings
-
-- [ ] FlowPilotProvider
-- [ ] Core hooks (useFlow, useCurrentStep, useFlowControls)
-- [ ] Target hooks
-- [ ] Event hooks
-- [ ] SSR safety
-
-### Phase 4: Testing & Docs
-
-- [ ] Unit tests for core engine
-- [ ] React integration tests
-- [ ] E2E browser tests
-- [ ] Documentation site
-- [ ] Examples and guides
-
-### Phase 5: Polish
-
-- [ ] Bundle optimization
-- [ ] Type validation
-- [ ] API review
-- [ ] Publishing setup
+- [x] Core engine (`@flowpilot/core`)
+- [x] React bindings (`@flowpilot/react`)
+- [x] Core + React test suites
+- [x] Demo Playwright E2E setup
+- [x] Next.js docs app scaffold
+- [ ] API docs depth polish
+- [ ] Publish validation and release automation polish
 
 ## Contributing
 

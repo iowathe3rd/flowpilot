@@ -40,11 +40,7 @@ function OnboardingFlow() {
   useEffect(() => {
     registerFlow({
       id: 'onboarding',
-      steps: [
-        { id: 'welcome' },
-        { id: 'features' },
-        { id: 'complete' },
-      ],
+      steps: [{ id: 'welcome' }, { id: 'features' }, { id: 'complete' }],
     });
     start('onboarding');
   }, []);
@@ -52,6 +48,18 @@ function OnboardingFlow() {
   return <div>Current step: {state.currentStepId}</div>;
 }
 ```
+
+## Provider
+
+### `<FlowPilotProvider />`
+
+Props:
+
+- `config?: FlowPilotConfig` - logger and engine config
+- `flows?: FlowConfig[]` - pre-register flows
+- `activeFlowId?: string | null` - controlled active flow
+- `activeStepId?: string | null` - controlled active step
+- `onStateChange?: (state) => void` - observe state transitions
 
 ## Hooks
 
@@ -74,6 +82,10 @@ Get control flags (canNext, canPrev, etc).
 ### useFlowEvents(eventType, listener)
 
 Subscribe to specific events.
+
+### useTarget(spec?)
+
+Resolve and track target element geometry for custom overlays/tooltips.
 
 ## License
 

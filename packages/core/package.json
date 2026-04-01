@@ -1,6 +1,6 @@
 {
   "name": "@flowpilot/core",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "description": "Framework-agnostic orchestration engine for product tours and onboarding flows",
   "type": "module",
   "main": "./dist/index.js",
@@ -41,6 +41,9 @@
     "directory": "packages/core"
   },
   "license": "MIT",
+  "publishConfig": {
+    "access": "public"
+  },
   "devDependencies": {
     "@flowpilot/eslint-config": "workspace:*",
     "@flowpilot/tsconfig": "workspace:*",

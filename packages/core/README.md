@@ -57,6 +57,7 @@ engine.on('step:enter', (event) => {
 Main orchestration engine.
 
 **Methods:**
+
 - `registerFlow(config)` - Register a flow
 - `start(flowId)` - Start a flow
 - `next()` - Move to next step
@@ -70,6 +71,27 @@ Main orchestration engine.
 - `getControls()` - Get control flags
 - `getCurrentStep()` - Get current step
 - `on(eventType, listener)` - Subscribe to events
+
+### Event Types
+
+- `flow:start`
+- `flow:pause`
+- `flow:resume`
+- `flow:complete`
+- `flow:skip`
+- `flow:error`
+- `step:enter`
+- `step:leave`
+- `step:ready`
+
+### Target Utilities
+
+`@flowpilot/core` also exports target helpers:
+
+- `resolveTarget(spec)` - resolve selector/ref/function/element
+- `waitForTarget(spec, options)` - wait until target appears
+- `observeTarget(spec, callback)` - subscribe to target changes
+- `getTargetRect(spec)` - compute target geometry
 
 ## License
 

@@ -6,7 +6,6 @@ import type {
   Logger,
   LoggerConfig,
   EventEmitter,
-  Unsubscribe,
 } from '../types';
 import { FlowStateMachine } from './state-machine';
 import { FlowEventEmitter } from './event-emitter';

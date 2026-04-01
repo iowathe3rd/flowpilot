@@ -1,6 +1,6 @@
 'use client';
 
-import { useSyncExternalStore, useMemo } from 'react';
+import { useSyncExternalStore, useMemo, useRef, useCallback } from 'react';
 import { useFlowPilotEngine } from '../provider/FlowPilotProvider';
 import { resolveTarget } from '@flowpilot/core';
 import type { ResolvedTarget, TargetSpec } from '@flowpilot/core';
@@ -10,6 +10,7 @@ import type { ResolvedTarget, TargetSpec } from '@flowpilot/core';
  */
 export function useTarget(spec?: TargetSpec): ResolvedTarget | null {
   const engine = useFlowPilotEngine();
+  const targetRef = useRef<ResolvedTarget | null>(null);
 
   // Get current step's target if no spec provided
   const targetSpec = useMemo(() => {
@@ -20,23 +21,35 @@ export function useTarget(spec?: TargetSpec): ResolvedTarget | null {
     return step?.target ?? null;
   }, [spec, engine]);
 
-  return useSyncExternalStore(
-    (callback) => {
+  if (targetRef.current === null && targetSpec) {
+    targetRef.current = resolveTarget(targetSpec);
+  }
+
+  const subscribe = useCallback(
+    (callback: () => void) => {
       // Subscribe to step changes
+      const wrappedCallback = () => {
+        targetRef.current = targetSpec ? resolveTarget(targetSpec) : null;
+        callback();
+      };
       const unsubscribers = [
-        engine.on('step:enter', callback),
-        engine.on('step:ready', callback),
+        engine.on('step:enter', wrappedCallback),
+        engine.on('step:ready', wrappedCallback),
       ];
 
       // Setup periodic updates for target changes (resize, position, etc)
-      const interval = setInterval(callback, 100);
+      const interval = setInterval(wrappedCallback, 100);
 
       return () => {
         unsubscribers.forEach((unsub) => unsub());
         clearInterval(interval);
       };
     },
-    () => (targetSpec ? resolveTarget(targetSpec) : null),
-    () => null // SSR snapshot
+    [engine, targetSpec]
   );
+
+  const getSnapshot = useCallback(() => targetRef.current, []);
+  const getServerSnapshot = useCallback(() => null, []);
+
+  return useSyncExternalStore(subscribe, getSnapshot, getServerSnapshot);
 }

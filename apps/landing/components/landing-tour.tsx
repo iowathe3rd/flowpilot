@@ -2,7 +2,6 @@
 
 import { useCallback, useEffect, useState } from 'react';
 import {
-  FlowPilotProvider,
   useFlowPilot,
   useCurrentStep,
   useFlow,
@@ -214,18 +213,7 @@ function TourUI() {
   );
 }
 
-// Landing Tour Provider (wraps the page)
-export function LandingTourProvider({ children }: { children: React.ReactNode }) {
-  return (
-    <FlowPilotProvider>
-      {children}
-      <TourUIWrapper />
-    </FlowPilotProvider>
-  );
-}
-
-// Wrapper to register flow and render UI
-function TourUIWrapper() {
+export function LandingTourLayer() {
   const { registerFlow } = useFlowPilot();
   const [registered, setRegistered] = useState(false);
 
@@ -247,6 +235,8 @@ function TourUIWrapper() {
 
   return <TourUI />;
 }
+
+export const LandingTourProvider = LandingTourLayer;
 
 // Hook to start the tour from anywhere (e.g., Hero CTA)
 export function useStartLandingTour() {

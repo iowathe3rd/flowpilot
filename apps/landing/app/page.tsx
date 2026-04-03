@@ -3,7 +3,10 @@
 import type React from "react"
 
 import { useState, useEffect, useRef } from "react"
-import { useStartLandingTour } from "../components/landing-tour"
+import {
+  LandingTourLayer,
+  useStartLandingTour,
+} from "../components/landing-tour"
 import SmartSimpleBrilliant from "../components/smart-simple-brilliant"
 import YourWorkInSync from "../components/your-work-in-sync"
 import EffortlessIntegration from "../components/effortless-integration-updated"
@@ -83,6 +86,7 @@ export default function LandingPage() {
 
   return (
     <div className="w-full min-h-screen relative bg-[#F7F5F3] overflow-x-hidden flex flex-col justify-start items-center">
+      <LandingTourLayer />
       <div className="relative flex flex-col justify-start items-center w-full">
         {/* Main container with proper margins */}
         <div className="w-full max-w-none px-4 sm:px-6 md:px-8 lg:px-0 lg:max-w-[1060px] lg:w-[1060px] relative flex flex-col justify-start items-start min-h-screen">
